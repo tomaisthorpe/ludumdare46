@@ -77,8 +77,8 @@ function Level:spawnEntities()
       for o=1, #layer.objects, 1 do
         local object = layer.objects[o]
         if object.type == "enemy" then
-          -- local enemy = Enemy(self, self.world, object.x, object.y)
-          -- self:addEntity(enemy)
+          local enemy = Enemy(self, self.world, object.x, object.y)
+          self:addEntity(enemy)
         end
 
         if object.type == "playerStart" then
@@ -210,7 +210,6 @@ function Level:draw()
   self.camera:attach()
 
   love.graphics.draw(self.canvas, 0, 0)
-  self.player:draw()
 
   for e=1, #self.entities, 1 do
     -- TODO need to get rid of dead entities
@@ -218,6 +217,8 @@ function Level:draw()
       self.entities[e]:draw()
     end
   end
+
+  self.player:draw()
 
   -- Draw physics
  -- self.world:draw()

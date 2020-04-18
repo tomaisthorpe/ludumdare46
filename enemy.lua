@@ -6,12 +6,13 @@ local Enemy = Class{
   init = function(self, level, world, x, y)
     self.world = world
     self.level = level
-    self.object = world:newRectangleCollider(x-13, y-40, 26, 40)
+    self.object = world:newRectangleCollider(x-16, y-16, 32, 32)
     self.object:setCollisionClass('Enemy')
     self.object:setFixedRotation(true)
-
     self.object:setObject(self)
+    self.direction = -1
 
+    self.image = love.graphics.newImage("assets/enemy.png")
   end,
   speed = 400,
   health = 100,
@@ -51,8 +52,8 @@ function Enemy:hit(damage)
 end
 
 function Enemy:draw()
-  love.graphics.setColor(0, 1, 1)
-  love.graphics.rectangle('fill', self:getX() - 13, self:getY() - 20, 26, 40)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(self.image, self:getX() - 16 * self.direction, self:getY() - 16, 0, self.direction, 1)
 end
 
 function Enemy:destroy()
