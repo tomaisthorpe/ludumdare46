@@ -37,9 +37,8 @@ function game:resize()
 end
 
 function game:keypressed(key)
-  -- TODO we have double jump atm
-  if key == 'space' then
-    self.level.player.object:applyLinearImpulse(0, -600)
+  if key == "escape" then
+    love.event.quit()
   end
 end
 

@@ -1,11 +1,13 @@
-local Class = require "hump.class"
+local Class = require 'hump.class'
 
 local Player = Class{
-  init = function(self, world) 
-    self.object = world:newRectangleCollider(390, 450, 20, 40)
+  init = function(self, world)
+    self.object = world:newRectangleCollider(390, 450, 26, 54)
     self.object:setCollisionClass('Player')
     self.object:setFixedRotation(true)
-  end
+  end,
+  speed = 400,
+  jumpForce = -270
 }
 
 function Player:getX()
@@ -17,17 +19,24 @@ function Player:getY()
 end
 
 function Player:update(dt)
-  if love.keyboard.isDown("left") then 
-    self.object:applyForce(-1000, 0)
+  if love.keyboard.isDown('left') then
+    self.object:applyForce(-self.speed * self.object:getMass(), 0)
   end
-  if love.keyboard.isDown("right") then 
-    self.object:applyForce(1000, 0)
+  if love.keyboard.isDown('right') then
+    self.object:applyForce(self.speed * self.object:getMass(), 0)
+  end
+
+  if love.keyboard.isDown('space') then
+    _, y = self.object:getLinearVelocity()
+    if y == 0 then
+      self.object:applyLinearImpulse(0, self.jumpForce * self.object:getMass())
+    end
   end
 end
 
 function Player:draw()
   love.graphics.setColor(0, 0, 1)
-  love.graphics.rectangle("fill", self:getX() - 10, self:getY() - 20, 20, 40)
+  love.graphics.rectangle('fill', self:getX() - 13, self:getY() - 27, 26, 54)
 end
 
 return Player

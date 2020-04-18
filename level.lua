@@ -12,8 +12,8 @@ local Level = Class{
 
 
     -- Create the world for physics
-    love.physics.setMeter(64)
-    self.world = wf.newWorld(0, 9.81 * 64, true)
+    love.physics.setMeter(32)
+    self.world = wf.newWorld(0, 9.81 * 32, true)
     self.world:addCollisionClass('Solid')
     self.world:addCollisionClass('Player')
 
