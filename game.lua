@@ -1,7 +1,9 @@
-wf = require 'windfield'
-Camera = require "hump.camera"
+local wf = require 'windfield'
+local Camera = require 'hump.camera'
 
-require 'conf'
+local conf = require 'conf'
+local Level = require 'level'
+local test = require 'maps.test'
 
 game = {
   translate = {0, 0},
@@ -50,6 +52,8 @@ function game:init()
   camera = Camera(player:getX(), player:getY())
 
   game:calculateScaling()
+
+  level = Level(world, test)
 end
 
 function game:resize()
@@ -94,6 +98,7 @@ function game:draw()
 
   camera:attach()
   world:draw()
+  level:draw()
   camera:detach()
 
   -- Draw borders
