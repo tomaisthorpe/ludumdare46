@@ -226,12 +226,6 @@ function Level:draw()
   self.camera:detach()
 end
 
-function Level:keyreleased(key)
-  if key == "z" then
-    self.player:shoot()
-  end
-end
-
 function Level:onplayerdeath()
   self.paused = true
 

@@ -60,10 +60,6 @@ function game:keypressed(key)
   end
 end
 
-function game:keyreleased(key)
-  self.level:keyreleased(key)
-end
-
 function game:onlevelcomplete()
   if self.levelIndex == #self.levelData then
     love.event.quit()

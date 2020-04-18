@@ -15,8 +15,11 @@ local Player = Class{
   end,
   speed = 300,
   jumpForce = -270,
+  fireRate = 0.2,
   direction = 1,
   health = 100,
+
+  lastShoot = 0,
 }
 
 function Player:getX()
@@ -41,6 +44,14 @@ function Player:update(dt)
     _, y = self.object:getLinearVelocity()
     if y == 0 then
       self.object:applyLinearImpulse(0, self.jumpForce * self.object:getMass())
+    end
+  end
+
+  -- If key is down, check if we can shoot
+  if love.keyboard.isDown('z') then
+    if self.lastShoot < love.timer.getTime() - self.fireRate then
+      self.lastShoot = love.timer.getTime()
+      self:shoot()
     end
   end
 end
