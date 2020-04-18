@@ -3,15 +3,18 @@ local Class = require 'hump.class'
 local Bullet = require 'bullet'
 
 local Player = Class{
-  init = function(self, world)
+  init = function(self, game, world)
     self.world = world
+    self.game = game
     self.object = world:newRectangleCollider(390, 450, 26, 54)
     self.object:setCollisionClass('Player')
     self.object:setFixedRotation(true)
+    self.object:setObject(self)
   end,
   speed = 400,
   jumpForce = -270,
-  direction = 1
+  direction = 1,
+  health = 100,
 }
 
 function Player:getX()
@@ -44,7 +47,11 @@ function Player:shoot()
   local vx, vy = self.object:getLinearVelocity()
   local bullet = Bullet(self.world, self:getX(), self:getY(), vx, vy, self.direction)
 
-  return bullet
+  self.game:addEntity(bullet)
+end
+
+function Player:hit(damage)
+  self.health = self.health - damage
 end
 
 function Player:draw()

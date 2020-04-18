@@ -19,10 +19,11 @@ local Level = Class{
     self.world:addCollisionClass('Player')
     self.world:addCollisionClass('Enemy')
     self.world:addCollisionClass('Bullet', {ignores = {'Player'}})
+    self.world:addCollisionClass('EnemyBullet', {ignores = {'Enemy'}})
     self.world:addCollisionClass('Goal', {ignores = {'Player'}})
 
     -- Create the player
-    self.player = Player(self.world)
+    self.player = Player(self, self.world)
 
     -- Entities contains all objects apart from the player
     self.entities = {}
@@ -68,12 +69,16 @@ function Level:spawnEntities()
       for o=1, #layer.objects, 1 do
         local object = layer.objects[o]
         if object.type == "enemy" then
-          local enemy = Enemy(self.world, object.x, object.y)
-          table.insert(self.entities, enemy)
+          local enemy = Enemy(self, self.world, object.x, object.y)
+          self:addEntity(enemy)
         end
       end
     end
   end
+end
+
+function Level:addEntity(entity)
+  table.insert(self.entities, entity)
 end
 
 function Level:updateColliders()
@@ -93,7 +98,7 @@ function Level:updateColliders()
           local collider = self.world:newRectangleCollider(object.x, object.y, object.width, object.height)
           if  object.properties.isGoal then
             collider:setCollisionClass('Goal')
-          else 
+          else
             collider:setCollisionClass('Solid')
           end
 
@@ -113,7 +118,7 @@ function Level:updateCanvas()
   for l=1, #self.data.layers, 1 do
     local layer = self.data.layers[l]
 
-    if layer.type == "tilelayer" then 
+    if layer.type == "tilelayer" then
       local x, y, width = layer.x, layer.y, layer.width
 
       love.graphics.push()
@@ -124,7 +129,7 @@ function Level:updateCanvas()
         if tile > 0 then
 
           local col = t % width - 1
-          local row = math.floor(t / 40) 
+          local row = math.floor(t / 40)
 
           love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 32, row * 32)
         end
@@ -159,7 +164,7 @@ function Level:update(dt)
   end
 end
 
-function Level:draw() 
+function Level:draw()
   love.graphics.setColorMask()
   love.graphics.setColor(255, 255, 255)
 
@@ -183,8 +188,7 @@ end
 
 function Level:keyreleased(key)
   if key == "z" then
-    local bullet = self.player:shoot()
-    table.insert(self.entities, bullet)
+    self.player:shoot()
   end
 end
 

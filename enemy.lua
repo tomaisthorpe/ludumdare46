@@ -3,16 +3,19 @@ local Class = require 'hump.class'
 local Bullet = require 'bullet'
 
 local Enemy = Class{
-  init = function(self, world, x, y)
+  init = function(self, game, world, x, y)
     self.world = world
+    self.game = game
     self.object = world:newRectangleCollider(x-13, y-40, 26, 40)
     self.object:setCollisionClass('Enemy')
     self.object:setFixedRotation(true)
 
     self.object:setObject(self)
+
   end,
   speed = 400,
-  health = 100
+  health = 100,
+  time = love.timer.getTime(),
 }
 
 function Enemy:getX()
@@ -24,6 +27,19 @@ function Enemy:getY()
 end
 
 function Enemy:update(dt)
+  if love.timer.getTime() - self.time > 2 then
+    self:shoot()
+    self.time = love.timer.getTime()
+  end
+end
+
+function Enemy:shoot()
+  local vx, vy = self.object:getLinearVelocity()
+  local bullet = Bullet(self.world, self.object:getX(), self.object:getY(), vx, vy, -1, {
+    isEnemy = true,
+  })
+
+  self.game:addEntity(bullet)
 end
 
 function Enemy:hit(damage)
