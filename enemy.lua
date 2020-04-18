@@ -15,7 +15,7 @@ local Enemy = Class{
     self.image = love.graphics.newImage("assets/enemy.png")
   end,
   speed = 400,
-  health = 100,
+  health = 50,
   time = love.timer.getTime(),
 }
 
@@ -28,9 +28,22 @@ function Enemy:getY()
 end
 
 function Enemy:update(dt)
-  if love.timer.getTime() - self.time > 2 then
-    self:shoot()
-    self.time = love.timer.getTime()
+  if self.dead ~= true then
+    -- Check if the enemy can see the player
+    local x, y, px, py = self:getX(), self:getY(), self.level.player:getX(), self.level.player:getY()
+    local colliders = self.world:queryLine(x, y, px, py, {'Solid'})
+    if #colliders == 0 then
+      -- Check angle is okay
+      local angle = math.atan2(math.abs(x-px),math.abs(y-py)) - math.pi / 2
+      local distance = math.sqrt(math.pow(x - px, 2) + math.pow(y - py, 2))
+
+      if math.abs(angle) < 0.2 and distance < 300 then
+        if love.timer.getTime() - self.time > 0.5 then
+          self:shoot()
+          self.time = love.timer.getTime()
+        end
+      end
+    end
   end
 end
 

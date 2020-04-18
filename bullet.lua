@@ -17,7 +17,7 @@ local Bullet =  Class{
     self.object:applyLinearImpulse(1000 * direction * self.object:getMass(), 0)
   end,
   dead = false,
-  damage = 40
+  damage = 20
 }
 
 function Bullet:update(dt)
