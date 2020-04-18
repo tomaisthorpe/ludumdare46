@@ -3,11 +3,13 @@ local Camera = require 'hump.camera'
 
 local conf = require 'conf'
 local Level = require 'level'
+local Player = require 'player'
 local test = require 'maps.test'
 
 game = {
   translate = {0, 0},
   scaling = 1,
+  player = {},
 }
 
 function game:calculateScaling()
@@ -42,14 +44,9 @@ function game:init()
   platform:setType('static')
   platform:setCollisionClass('Platform')
 
-  player = world:newRectangleCollider(390, 450, 20, 40)
-  player:setCollisionClass('Player')
+  game.player = Player(world)
 
-  joint = world:addJoint('FrictionJoint', ground, player, 400, 490, true)
-  joint:setMaxForce(200 * player:getMass())
-  joint:setMaxTorque(20 * player:getInertia())
-
-  camera = Camera(player:getX(), player:getY())
+  camera = Camera(game.player:getX(), game.player:getY())
 
   game:calculateScaling()
 
@@ -69,18 +66,10 @@ function game:keypressed(key)
 end
 
 function game:update(dt)
-  if love.keyboard.isDown("left") then 
-    player:applyForce(-1000, 0)
-  end
-  if love.keyboard.isDown("right") then 
-    player:applyForce(1000, 0)
-  end
+  game.player:update(dt)
   world:update(dt)
 
-  -- TODO improve this, doesn't really work
-  player:setAngularVelocity(0)
-
-  local dx, dy = player:getX() - camera.x, player:getY() - camera.y
+  local dx, dy = game.player:getX() - camera.x, game.player:getY() - camera.y
   camera:move(dx/2, dy/2)
 end
 
@@ -97,8 +86,8 @@ function game:draw()
   love.graphics.pop()
 
   camera:attach()
-  world:draw()
   level:draw()
+  game.player:draw()
   camera:detach()
 
   -- Draw borders

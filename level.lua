@@ -33,7 +33,7 @@ local Level = Class{
 function Level:updateCanvas()
   love.graphics.setCanvas(self.canvas)
   love.graphics.setColorMask()
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(1, 1, 1)
 
   for l=1, #self.data.layers, 1 do
     local layer = self.data.layers[l]
