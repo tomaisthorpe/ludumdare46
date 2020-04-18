@@ -6,10 +6,12 @@ local Player = Class{
   init = function(self, level, world, x, y)
     self.world = world
     self.level = level
-    self.object = world:newRectangleCollider(x - 13, y - 54, 26, 54)
+    self.object = world:newRectangleCollider(x - 16, y - 32, 32, 32)
     self.object:setCollisionClass('Player')
     self.object:setFixedRotation(true)
     self.object:setObject(self)
+    
+    self.image = love.graphics.newImage("assets/player.png")
   end,
   speed = 300,
   jumpForce = -270,
@@ -45,7 +47,7 @@ end
 
 function Player:shoot()
   local vx, vy = self.object:getLinearVelocity()
-  local bullet = Bullet(self.world, self:getX(), self:getY(), vx, vy, self.direction)
+  local bullet = Bullet(self.world, self:getX() + 14 * self.direction, self:getY(), vx, vy, self.direction)
 
   self.level:addEntity(bullet)
 end
@@ -60,8 +62,8 @@ function Player:hit(damage)
 end
 
 function Player:draw()
-  love.graphics.setColor(0, 0, 1)
-  love.graphics.rectangle('fill', self:getX() - 13, self:getY() - 27, 26, 54)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.draw(self.image, self:getX() - 16 * self.direction, self:getY() - 16, 0, self.direction, 1)
 end
 
 return Player
