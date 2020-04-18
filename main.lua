@@ -1,9 +1,11 @@
 wf = require 'windfield'
+Camera = require "hump.camera"
 
 player = {}
 
 function love.load()
-  world = wf.newWorld(0, 512, true)
+  love.physics.setMeter(64)
+  world = wf.newWorld(0, 9.81 * 64, true)
   world:addCollisionClass('Platform')
   world:addCollisionClass('Player')
   
@@ -18,9 +20,12 @@ function love.load()
   joint = world:addJoint('FrictionJoint', ground, player, 400, 490, true)
   joint:setMaxForce(200 * player:getMass())
   joint:setMaxTorque(20 * player:getInertia())
+
+  camera = Camera(player:getX(), player:getY())
 end
 
 function love.keypressed(key)
+  -- TODO we have double jump atm
   if key == 'space' then
     player:applyLinearImpulse(0, -600)
   end
@@ -35,11 +40,15 @@ function love.update(dt)
   end
   world:update(dt)
 
-    player:setAngularVelocity(0)
+  -- TODO improve this, doesn't really work
+  player:setAngularVelocity(0)
 
-  print(joint:getReactionForce(dt), joint:getReactionTorque(dt))
+  local dx, dy = player:getX() - camera.x, player:getY() - camera.y
+  camera:move(dx/2, dy/2)
 end
 
 function love.draw()
+  camera:attach()
   world:draw()
+  camera:detach()
 end
