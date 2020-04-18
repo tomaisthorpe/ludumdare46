@@ -22,14 +22,8 @@ local Level = Class{
     self.world:addCollisionClass('EnemyBullet', {ignores = {'Enemy'}})
     self.world:addCollisionClass('Goal', {ignores = {'Player'}})
 
-    -- Create the player
-    self.player = Player(self, self.world)
-
     -- Entities contains all objects apart from the player
     self.entities = {}
-
-    -- Create the camera defaulting to player position
-    self.camera = Camera(self.player:getX(), self.player:getY())
 
     -- Load the tiles
     self.tiles = {}
@@ -61,6 +55,13 @@ local Level = Class{
     self:spawnEntities()
     self.startTime = love.timer.getTime()
     self.endTime = self.startTime + 15
+
+    -- Create the player
+    self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y)
+
+    -- Create the camera defaulting to player position
+    self.camera = Camera(self.player:getX(), self.player:getY())
+
   end,
   tileSize = 16,
   paused = false,
@@ -78,6 +79,13 @@ function Level:spawnEntities()
         if object.type == "enemy" then
           local enemy = Enemy(self, self.world, object.x, object.y)
           self:addEntity(enemy)
+        end
+
+        if object.type == "playerStart" then
+          self.playerStartingPosition = {
+            x = object.x,
+            y = object.y,
+          }
         end
       end
     end
@@ -135,9 +143,9 @@ function Level:updateCanvas()
         local tile = layer.data[t]
         if tile > 0 then
 
-          local col = t % width - 1
-          local row = math.floor(t / layer.width)
-
+          local col = (t -1 ) % width 
+          local row = math.floor((t -1) / layer.width)
+          
           love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 16, row * 16)
         end
       end
