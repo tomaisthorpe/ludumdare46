@@ -79,6 +79,15 @@ function game:onplayerdeath()
   end
 end
 
+function game:ontimeout()
+  self.lives = self.lives - 1
+  if self.lives == 0 then
+    love.event.quit()
+  else
+    self:loadLevel(self.levelIndex)
+  end
+end
+
 function game:update(dt)
   self.level:update(dt)
 end
@@ -118,8 +127,8 @@ function game:drawUI()
   love.graphics.setColor(1, 1, 1)
   love.graphics.setFont(self.font)
   love.graphics.print("Health: " .. data.playerHealth, 10, 10, 0, 2)
-
-  love.graphics.print("Lives: " .. self.lives, 150, 10, 0, 2)
+  love.graphics.print("Time Left: " .. data.timeLeft, 10, 30, 0, 2)
+  love.graphics.print("Lives: " .. self.lives, 10, 50, 0, 2)
 
   love.graphics.pop()
 end

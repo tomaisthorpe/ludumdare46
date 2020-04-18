@@ -55,6 +55,8 @@ local Level = Class{
     self.colliders = {}
     self:updateColliders()
     self:spawnEntities()
+    self.startTime = love.timer.getTime()
+    self.endTime = self.startTime + 15
   end,
   tileSize = 32,
   paused = false,
@@ -146,6 +148,13 @@ function Level:update(dt)
   if self.paused then
     return
   end
+  
+  -- Check if time is over
+  if self:getTimeLeft() == 0 then
+    self.paused = true
+    self.game:ontimeout()
+    return
+  end
 
   self.player:update(dt)
   self.world:update(dt)
@@ -203,9 +212,20 @@ function Level:onplayerdeath()
   self.game:onplayerdeath()
 end
 
+function Level:getTimeLeft()
+  local left = self.endTime - love.timer.getTime()
+
+  if left < 0 then
+    left = 0
+  end
+
+  return left
+end
+
 function Level:getUIData()
   return {
     playerHealth = self.player.health,
+    timeLeft = self:getTimeLeft(),
   }
 end
 
