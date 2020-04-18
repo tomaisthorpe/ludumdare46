@@ -34,6 +34,10 @@ function game:init()
   game.font = love.graphics.newFont( "assets/veramono.ttf", 10 )
   game.font:setFilter( "nearest", "nearest" )
 
+  game.images = {
+    heart = love.graphics.newImage("assets/heart.png"),
+  }
+
   -- Create the world
   game:calculateScaling()
 
@@ -123,10 +127,35 @@ function game:drawUI()
   love.graphics.scale(game.scaling)
 
   love.graphics.setColor(1, 1, 1)
-  love.graphics.setFont(self.font)
-  love.graphics.print("Health: " .. data.playerHealth, 10, 10, 0, 2)
-  love.graphics.print("Time Left: " .. data.timeLeft, 10, 30, 0, 2)
-  love.graphics.print("Lives: " .. self.lives, 10, 50, 0, 2)
+
+  for l=1, self.lives, 1 do 
+    love.graphics.draw(self.images.heart, 800 - 40 * l, 16 + conf.healthHeight)
+  end
+
+  -- Draw health bar
+  love.graphics.push()
+  love.graphics.translate(800 - conf.healthWidth - 8, 8)
+  love.graphics.setColor(conf.healthBorderColor)
+  love.graphics.setLineWidth(conf.healthBorderWidth)
+  love.graphics.rectangle("line", 0, 0, conf.healthWidth, conf.healthHeight)
+
+  love.graphics.setColor(conf.healthColor)
+  love.graphics.rectangle("fill", conf.healthBorderWidth * 2, conf.healthBorderWidth * 2, conf.healthWidth * (data.playerHealth / 100) - conf.healthBorderWidth * 4, conf.healthHeight - conf.healthBorderWidth * 4)
+  love.graphics.pop()
+
+  -- Draw power bar
+  love.graphics.push()
+  love.graphics.translate(8, 8)
+  love.graphics.setColor(conf.powerBorderColor)
+  love.graphics.setLineWidth(conf.powerBorderWidth)
+  love.graphics.rectangle("line", 0, 0, conf.powerWidth, conf.powerHeight)
+
+  love.graphics.setColor(conf.powerColor)
+  love.graphics.rectangle("fill", conf.powerBorderWidth * 2, conf.powerBorderWidth * 2, conf.powerWidth * data.timeLeftPercentage - conf.powerBorderWidth * 4, conf.powerHeight - conf.powerBorderWidth * 4)
+
+  love.graphics.setColor(0.5, 0.5, 0.5)
+  love.graphics.print("POWER", 0, 1 + conf.powerHeight)
+  love.graphics.pop()
 
   love.graphics.pop()
 end

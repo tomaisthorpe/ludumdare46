@@ -54,7 +54,7 @@ local Level = Class{
     self:updateColliders()
     self:spawnEntities()
     self.startTime = love.timer.getTime()
-    self.endTime = self.startTime + 150
+    self.endTime = self.startTime + 60
 
     -- Create the player
     self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y)
@@ -252,6 +252,7 @@ function Level:getUIData()
   return {
     playerHealth = self.player.health,
     timeLeft = self:getTimeLeft(),
+    timeLeftPercentage = self:getTimeLeft() / 60,
   }
 end
 
