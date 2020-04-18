@@ -1,15 +1,10 @@
 local Class = require 'hump.class'
 
 local Bullet =  Class{
-  init = function(self, world, x, y, vx, vy)
+  init = function(self, world, x, y, vx, vy, direction)
     self.object = world:newCircleCollider(x, y, 2)
     self.object:setLinearVelocity(vx, vy)
     self.object:setCollisionClass('Bullet')
-
-    local direction  = 1
-    if vx < 0 then
-      direction = -1
-    end
 
     self.object:applyLinearImpulse(1000 * direction * self.object:getMass(), 0)
   end,

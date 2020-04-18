@@ -10,7 +10,8 @@ local Player = Class{
     self.object:setFixedRotation(true)
   end,
   speed = 400,
-  jumpForce = -270
+  jumpForce = -270,
+  direction = 1
 }
 
 function Player:getX()
@@ -24,9 +25,11 @@ end
 function Player:update(dt)
   if love.keyboard.isDown('left') then
     self.object:applyForce(-self.speed * self.object:getMass(), 0)
+    self.direction = -1
   end
   if love.keyboard.isDown('right') then
     self.object:applyForce(self.speed * self.object:getMass(), 0)
+    self.direction = 1
   end
 
   if love.keyboard.isDown('space') or love.keyboard.isDown('up') then
@@ -39,7 +42,7 @@ end
 
 function Player:shoot()
   local vx, vy = self.object:getLinearVelocity()
-  local bullet = Bullet(self.world, self:getX(), self:getY(), vx, vy)
+  local bullet = Bullet(self.world, self:getX(), self:getY(), vx, vy, self.direction)
 
   return bullet
 end
