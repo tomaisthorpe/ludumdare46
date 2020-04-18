@@ -1,6 +1,7 @@
 local Class = require 'hump.class'
 
 local Bullet = require 'bullet'
+local Shell = require 'shell'
 
 local Player = Class{
   init = function(self, level, world, x, y)
@@ -58,9 +59,12 @@ end
 
 function Player:shoot()
   local vx, vy = self.object:getLinearVelocity()
-  local bullet = Bullet(self.world, self:getX() + 14 * self.direction, self:getY(), vx, vy, self.direction)
 
+  local bullet = Bullet(self.world, self:getX() + 14 * self.direction, self:getY(), vx, vy, self.direction)
   self.level:addEntity(bullet)
+
+  local shell = Shell(self.world, self:getX() + 0 * self.direction, self:getY(), vx, vy, self.direction)
+  self.level:addEntity(shell)
 end
 
 function Player:hit(damage)

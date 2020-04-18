@@ -1,6 +1,6 @@
 local wf = require 'windfield'
 local Class = require 'hump.class'
-local Camera = require 'hump.camera'
+ Camera = require 'hump.camera'
 
 local Player = require 'player'
 local Enemy = require 'enemy'
@@ -21,6 +21,7 @@ local Level = Class{
     self.world:addCollisionClass('Bullet', {ignores = {'Player'}})
     self.world:addCollisionClass('EnemyBullet', {ignores = {'Enemy'}})
     self.world:addCollisionClass('Goal', {ignores = {'Player'}})
+    self.world:addCollisionClass('Particle', {ignores={'Bullet', 'EnemyBullet', 'Goal', 'Player', 'Enemy'}})
 
     -- Entities contains all objects apart from the player
     self.entities = {}
@@ -197,7 +198,7 @@ function Level:update(dt)
     if self.entities[e] ~= nil then
       self.entities[e]:update(dt)
       if self.entities[e].dead then
-        self.entities[e] = nil
+        table.remove(self.entities, e)
       end
     end
   end
@@ -221,7 +222,7 @@ function Level:draw()
   self.player:draw()
 
   -- Draw physics
- -- self.world:draw()
+  -- self.world:draw()
 
   self.camera:detach()
 end
