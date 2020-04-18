@@ -44,9 +44,35 @@ local Level = Class{
 
     self:updateCanvas()
 
+    self.colliders = {}
+    self:updateColliders()
   end,
   tileSize = 32
 }
+
+function Level:updateColliders()
+  -- Destory existing coliders
+  for c=1, #self.colliders, 1 do
+    self.colliders[c]:destroy()
+  end
+
+  self.colliders = {}
+  for l=1, #self.data.layers, 1 do
+    local layer = self.data.layers[l]
+    if layer.properties.isCollision then
+      -- Each option refers to a collider
+      for o=1, #layer.objects, 1 do
+        local object = layer.objects[o]
+        if object.shape == "rectangle" then
+          local collider = self.world:newRectangleCollider(object.x, object.y, object.width, object.height)
+          collider:setCollisionClass('Solid')
+          collider:setType('static')
+          table.insert(self.colliders, collider)
+        end
+      end
+    end
+  end
+end
 
 function Level:updateCanvas()
   love.graphics.setCanvas(self.canvas)
@@ -67,7 +93,7 @@ function Level:updateCanvas()
         if tile > 0 then
 
           local col = t % width - 1
-          local row = math.floor(t / 40) - 1
+          local row = math.floor(t / 40) 
 
           love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 32, row * 32)
         end
@@ -96,6 +122,7 @@ function Level:draw()
 
   love.graphics.draw(self.canvas, 0, 0)
   self.player:draw()
+  self.world:draw()
 
   self.camera:detach()
 end

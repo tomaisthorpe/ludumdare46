@@ -4,6 +4,7 @@ local Player = Class{
   init = function(self, world) 
     self.object = world:newRectangleCollider(390, 450, 20, 40)
     self.object:setCollisionClass('Player')
+    self.object:setFixedRotation(true)
   end
 }
 
@@ -26,7 +27,7 @@ end
 
 function Player:draw()
   love.graphics.setColor(0, 0, 1)
-  love.graphics.rectangle("fill", self:getX(), self:getY(), 20, 40)
+  love.graphics.rectangle("fill", self:getX() - 10, self:getY() - 20, 20, 40)
 end
 
 return Player
