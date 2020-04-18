@@ -1,15 +1,11 @@
-local wf = require 'windfield'
-local Camera = require 'hump.camera'
-
 local conf = require 'conf'
 local Level = require 'level'
-local Player = require 'player'
 local test = require 'maps.test'
 
 game = {
   translate = {0, 0},
   scaling = 1,
-  player = {},
+  level = {},
 }
 
 function game:calculateScaling()
@@ -21,8 +17,6 @@ function game:calculateScaling()
   else
     game.scaling = love.graphics.getWidth() / 800
   end
-
-  camera:zoom(game.scaling)
 end
 
 function game:init()
@@ -32,25 +26,9 @@ function game:init()
   love.window.setFullscreen(true)
 
   -- Create the world
-  love.physics.setMeter(64)
-  world = wf.newWorld(0, 9.81 * 64, true)
-  world:addCollisionClass('Platform')
-  world:addCollisionClass('Player')
-  
-  ground = world:newRectangleCollider(100, 500, 600, 50)
-  ground:setType('static')
-
-  platform = world:newRectangleCollider(350, 400, 100, 20)
-  platform:setType('static')
-  platform:setCollisionClass('Platform')
-
-  game.player = Player(world)
-
-  camera = Camera(game.player:getX(), game.player:getY())
-
   game:calculateScaling()
 
-  level = Level(world, test)
+  self.level = Level(self, test)
 end
 
 function game:resize()
@@ -61,16 +39,12 @@ end
 function game:keypressed(key)
   -- TODO we have double jump atm
   if key == 'space' then
-    player:applyLinearImpulse(0, -600)
+    self.level.player.object:applyLinearImpulse(0, -600)
   end
 end
 
 function game:update(dt)
-  game.player:update(dt)
-  world:update(dt)
-
-  local dx, dy = game.player:getX() - camera.x, game.player:getY() - camera.y
-  camera:move(dx/2, dy/2)
+  self.level:update(dt)
 end
 
 function game:draw()
@@ -85,10 +59,8 @@ function game:draw()
 
   love.graphics.pop()
 
-  camera:attach()
-  level:draw()
-  game.player:draw()
-  camera:detach()
+  -- Drawing the level also handles camera and player
+  self.level:draw()
 
   -- Draw borders
   love.graphics.setColor(conf.borderColor[1], conf.borderColor[2], conf.borderColor[3])

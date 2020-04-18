@@ -1,10 +1,27 @@
-Class = require "hump.class"
+local wf = require 'windfield'
+local Class = require 'hump.class'
+local Camera = require 'hump.camera'
+
+local Player = require 'player'
 
 local Level = Class{
-  init = function(self, world, data)
-    self.world = world
+  init = function(self, game, data)
+    self.game = game
     self.data = data
     self.canvas = love.graphics.newCanvas(data.width * 32, data.height * 32)
+
+
+    -- Create the world for physics
+    love.physics.setMeter(64)
+    self.world = wf.newWorld(0, 9.81 * 64, true)
+    self.world:addCollisionClass('Solid')
+    self.world:addCollisionClass('Player')
+
+    -- Create the player
+    self.player = Player(self.world)
+
+    -- Create the camera defaulting to player position
+    self.camera = Camera(self.player:getX(), self.player:getY())
 
     -- Load the tiles
     self.tiles = {}
@@ -26,6 +43,7 @@ local Level = Class{
     end
 
     self:updateCanvas()
+
   end,
   tileSize = 32
 }
@@ -61,12 +79,27 @@ function Level:updateCanvas()
   love.graphics.setCanvas()
 end
 
+function Level:update(dt)
+  self.player:update(dt)
+  self.world:update(dt)
+
+  local dx, dy = self.player:getX() - self.camera.x, self.player:getY() - self.camera.y
+  self.camera:move(dx/2, dy/2)
+  self.camera:zoomTo(self.game.scaling)
+end
+
 function Level:draw() 
   love.graphics.setColorMask()
   love.graphics.setColor(255, 255, 255)
 
+  self.camera:attach()
+
   love.graphics.draw(self.canvas, 0, 0)
+  self.player:draw()
+
+  self.camera:detach()
 end
+
 
 
 return Level
