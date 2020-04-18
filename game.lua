@@ -42,6 +42,10 @@ function game:keypressed(key)
   end
 end
 
+function game:keyreleased(key)
+  self.level:keyreleased(key)
+end
+
 function game:update(dt)
   self.level:update(dt)
 end

@@ -16,9 +16,11 @@ local Level = Class{
     self.world = wf.newWorld(0, 9.81 * 32, true)
     self.world:addCollisionClass('Solid')
     self.world:addCollisionClass('Player')
+    self.world:addCollisionClass('Bullet', {ignores = {'Player'}})
 
     -- Create the player
     self.player = Player(self.world)
+    self.bullets = {}
 
     -- Create the camera defaulting to player position
     self.camera = Camera(self.player:getX(), self.player:getY())
@@ -112,6 +114,17 @@ function Level:update(dt)
   local dx, dy = self.player:getX() - self.camera.x, self.player:getY() - self.camera.y
   self.camera:move(dx/2, dy/2)
   self.camera:zoomTo(self.game.scaling)
+
+  for b=1, #self.bullets, 1 do
+    -- TODO need to get rid of dead bulletsr
+    if self.bullets[b] == nil then
+    else
+      self.bullets[b]:update(dt)
+      if self.bullets[b].dead then
+        self.bullets[b] = nil
+      end
+    end
+  end
 end
 
 function Level:draw() 
@@ -122,11 +135,26 @@ function Level:draw()
 
   love.graphics.draw(self.canvas, 0, 0)
   self.player:draw()
-  self.world:draw()
+
+  for b=1, #self.bullets, 1 do
+    -- TODO need to get rid of dead bullets
+    if self.bullets[b] == nil then
+    else
+      self.bullets[b]:draw()
+    end
+  end
+
+  -- Draw physics
+  -- self.world:draw()
 
   self.camera:detach()
 end
 
-
+function Level:keyreleased(key)
+  if key == "z" then
+    local bullet = self.player:shoot()
+    table.insert(self.bullets, bullet)
+  end
+end
 
 return Level

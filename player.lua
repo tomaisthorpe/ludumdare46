@@ -1,7 +1,10 @@
 local Class = require 'hump.class'
 
+local Bullet = require 'bullet'
+
 local Player = Class{
   init = function(self, world)
+    self.world = world
     self.object = world:newRectangleCollider(390, 450, 26, 54)
     self.object:setCollisionClass('Player')
     self.object:setFixedRotation(true)
@@ -26,12 +29,19 @@ function Player:update(dt)
     self.object:applyForce(self.speed * self.object:getMass(), 0)
   end
 
-  if love.keyboard.isDown('space') then
+  if love.keyboard.isDown('space') or love.keyboard.isDown('up') then
     _, y = self.object:getLinearVelocity()
     if y == 0 then
       self.object:applyLinearImpulse(0, self.jumpForce * self.object:getMass())
     end
   end
+end
+
+function Player:shoot()
+  local vx, vy = self.object:getLinearVelocity()
+  local bullet = Bullet(self.world, self:getX(), self:getY(), vx, vy)
+
+  return bullet
 end
 
 function Player:draw()
