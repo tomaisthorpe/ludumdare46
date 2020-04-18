@@ -8,14 +8,28 @@ local Bullet =  Class{
 
     self.object:applyLinearImpulse(1000 * direction * self.object:getMass(), 0)
   end,
-  dead = false
+  dead = false,
+  damage = 40
 }
 
 function Bullet:update(dt)
   if self.object:enter('Solid') then
-    self.object:destroy()
-    self.dead = true
+    self:destroy()
   end
+
+  if self.object:enter('Enemy') then
+    local collision = self.object:getEnterCollisionData('Enemy')
+    local enemy = collision.collider:getObject()
+
+    enemy:hit(self.damage)
+
+    self:destroy()
+  end
+end
+
+function Bullet:destroy()
+  self.object:destroy()
+  self.dead = true
 end
 
 function Bullet:draw() 

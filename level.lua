@@ -150,8 +150,7 @@ function Level:update(dt)
 
   for e=1, #self.entities, 1 do
     -- TODO need to get rid of dead entities
-    if self.entities[e] == nil then
-    else
+    if self.entities[e] ~= nil then
       self.entities[e]:update(dt)
       if self.entities[e].dead then
         self.entities[e] = nil
@@ -171,8 +170,7 @@ function Level:draw()
 
   for e=1, #self.entities, 1 do
     -- TODO need to get rid of dead entities
-    if self.entities[e] == nil then
-    else
+    if self.entities[e] ~= nil and self.entities[e].dead ~= true then
       self.entities[e]:draw()
     end
   end
