@@ -97,7 +97,7 @@ function game:draw()
 
   -- TODO remove when done
   -- This is for debug to show any problem areas
-  love.graphics.setColor(1, 0, 0)
+  love.graphics.setColor(199 / 255, 125 / 255, 139 / 255)
   love.graphics.polygon("fill", 0, 0, 800, 0, 800, 600, 0, 600)
 
   love.graphics.pop()

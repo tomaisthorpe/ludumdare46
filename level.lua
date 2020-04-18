@@ -54,13 +54,14 @@ local Level = Class{
     self:updateColliders()
     self:spawnEntities()
     self.startTime = love.timer.getTime()
-    self.endTime = self.startTime + 15
+    self.endTime = self.startTime + 150
 
     -- Create the player
     self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y)
 
     -- Create the camera defaulting to player position
     self.camera = Camera(self.player:getX(), self.player:getY())
+    self.camera.smoother = Camera.smooth.damped(3)
 
   end,
   tileSize = 16,
@@ -77,8 +78,8 @@ function Level:spawnEntities()
       for o=1, #layer.objects, 1 do
         local object = layer.objects[o]
         if object.type == "enemy" then
-          local enemy = Enemy(self, self.world, object.x, object.y)
-          self:addEntity(enemy)
+          -- local enemy = Enemy(self, self.world, object.x, object.y)
+          -- self:addEntity(enemy)
         end
 
         if object.type == "playerStart" then
@@ -176,8 +177,19 @@ function Level:update(dt)
   end
 
   local dx, dy = self.player:getX() - self.camera.x, self.player:getY() - self.camera.y
-  self.camera:move(dx/2, dy/2)
   self.camera:zoomTo(self.game.scaling)
+
+  local minX = self.game.translate[1] + 150 * self.game.scaling
+  local maxX = self.game.translate[1] + 250 * self.game.scaling
+  local minY = self.game.translate[2] + 300 * self.game.scaling
+  local maxY = self.game.translate[2] + 400 * self.game.scaling
+
+  if self.player.direction == -1 then
+    minX = self.game.translate[1] + 550 * self.game.scaling
+    maxX = self.game.translate[1] + 650 * self.game.scaling
+  end
+
+  self.camera:lockWindow(self.player:getX(), self.player:getY() - 100, minX, maxX, minY, maxY)
 
   for e=1, #self.entities, 1 do
     -- TODO need to get rid of dead entities
@@ -207,7 +219,7 @@ function Level:draw()
   end
 
   -- Draw physics
- self.world:draw()
+ -- self.world:draw()
 
   self.camera:detach()
 end

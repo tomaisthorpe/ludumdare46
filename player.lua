@@ -11,7 +11,7 @@ local Player = Class{
     self.object:setFixedRotation(true)
     self.object:setObject(self)
   end,
-  speed = 400,
+  speed = 300,
   jumpForce = -270,
   direction = 1,
   health = 100,
