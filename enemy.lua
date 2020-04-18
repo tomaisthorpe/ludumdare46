@@ -3,9 +3,9 @@ local Class = require 'hump.class'
 local Bullet = require 'bullet'
 
 local Enemy = Class{
-  init = function(self, game, world, x, y)
+  init = function(self, level, world, x, y)
     self.world = world
-    self.game = game
+    self.level = level
     self.object = world:newRectangleCollider(x-13, y-40, 26, 40)
     self.object:setCollisionClass('Enemy')
     self.object:setFixedRotation(true)
@@ -39,7 +39,7 @@ function Enemy:shoot()
     isEnemy = true,
   })
 
-  self.game:addEntity(bullet)
+  self.level:addEntity(bullet)
 end
 
 function Enemy:hit(damage)

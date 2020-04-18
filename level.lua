@@ -56,7 +56,8 @@ local Level = Class{
     self:updateColliders()
     self:spawnEntities()
   end,
-  tileSize = 32
+  tileSize = 32,
+  paused = false,
 }
 
 function Level:spawnEntities()
@@ -142,6 +143,10 @@ function Level:updateCanvas()
 end
 
 function Level:update(dt)
+  if self.paused then
+    return
+  end
+
   self.player:update(dt)
   self.world:update(dt)
 
@@ -190,6 +195,18 @@ function Level:keyreleased(key)
   if key == "z" then
     self.player:shoot()
   end
+end
+
+function Level:onplayerdeath()
+  self.paused = true
+
+  self.game:onplayerdeath()
+end
+
+function Level:getUIData()
+  return {
+    playerHealth = self.player.health,
+  }
 end
 
 return Level

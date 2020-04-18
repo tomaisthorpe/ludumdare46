@@ -12,6 +12,8 @@ game = {
   },
   level = {},
   levelIndex = 0,
+  font = {},
+  lives = 5,
 }
 
 function game:calculateScaling()
@@ -30,6 +32,9 @@ function game:init()
   love.graphics.setDefaultFilter("nearest", "nearest")
   -- TODO ENABLE THIS
   love.window.setFullscreen(true)
+
+  game.font = love.graphics.newFont( "assets/veramono.ttf", 10 )
+  game.font:setFilter( "nearest", "nearest" )
 
   -- Create the world
   game:calculateScaling()
@@ -60,8 +65,17 @@ end
 function game:onlevelcomplete()
   if self.levelIndex == #self.levelData then
     love.event.quit()
-  else 
+  else
     self:loadLevel(self.levelIndex + 1)
+  end
+end
+
+function game:onplayerdeath()
+  self.lives = self.lives - 1
+  if self.lives == 0 then
+    love.event.quit()
+  else
+    self:loadLevel(self.levelIndex)
   end
 end
 
@@ -90,4 +104,22 @@ function game:draw()
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), game.translate[2])
   love.graphics.rectangle("fill", love.graphics.getWidth() - game.translate[1], 0, game.translate[1], love.graphics.getHeight())
   love.graphics.rectangle("fill", 0, love.graphics.getHeight() - game.translate[2], love.graphics.getWidth(), game.translate[2])
+
+  self:drawUI()
+end
+
+function game:drawUI()
+  local data = self.level:getUIData()
+
+  love.graphics.push()
+  love.graphics.translate(game.translate[1], game.translate[2])
+  love.graphics.scale(game.scaling)
+
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.setFont(self.font)
+  love.graphics.print("Health: " .. data.playerHealth, 10, 10, 0, 2)
+
+  love.graphics.print("Lives: " .. self.lives, 150, 10, 0, 2)
+
+  love.graphics.pop()
 end
