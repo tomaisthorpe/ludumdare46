@@ -1,11 +1,17 @@
 local conf = require 'conf'
 local Level = require 'level'
 local test = require 'maps.test'
+local test2 = require 'maps.test2'
 
 game = {
   translate = {0, 0},
   scaling = 1,
+  levelData = {
+    test,
+    test2,
+  },
   level = {},
+  levelIndex = 0,
 }
 
 function game:calculateScaling()
@@ -28,7 +34,12 @@ function game:init()
   -- Create the world
   game:calculateScaling()
 
-  self.level = Level(self, test)
+  self:loadLevel(1)
+end
+
+function game:loadLevel(index)
+  self.levelIndex = index
+  self.level = Level(self, self.levelData[index])
 end
 
 function game:resize()
@@ -44,6 +55,14 @@ end
 
 function game:keyreleased(key)
   self.level:keyreleased(key)
+end
+
+function game:onlevelcomplete()
+  if self.levelIndex == #self.levelData then
+    love.event.quit()
+  else 
+    self:loadLevel(self.levelIndex + 1)
+  end
 end
 
 function game:update(dt)

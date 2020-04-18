@@ -3,6 +3,7 @@ local Class = require 'hump.class'
 local Camera = require 'hump.camera'
 
 local Player = require 'player'
+local Enemy = require 'enemy'
 
 local Level = Class{
   init = function(self, game, data)
@@ -16,11 +17,15 @@ local Level = Class{
     self.world = wf.newWorld(0, 9.81 * 32, true)
     self.world:addCollisionClass('Solid')
     self.world:addCollisionClass('Player')
+    self.world:addCollisionClass('Enemy')
     self.world:addCollisionClass('Bullet', {ignores = {'Player'}})
+    self.world:addCollisionClass('Goal', {ignores = {'Player'}})
 
     -- Create the player
     self.player = Player(self.world)
-    self.bullets = {}
+
+    -- Entities contains all objects apart from the player
+    self.entities = {}
 
     -- Create the camera defaulting to player position
     self.camera = Camera(self.player:getX(), self.player:getY())
@@ -48,9 +53,28 @@ local Level = Class{
 
     self.colliders = {}
     self:updateColliders()
+    self:spawnEntities()
   end,
   tileSize = 32
 }
+
+function Level:spawnEntities()
+  self.entities = {}
+
+  for l=1, #self.data.layers, 1 do
+    local layer = self.data.layers[l]
+    if layer.properties.isEntities then
+      -- Each option refers to a collider
+      for o=1, #layer.objects, 1 do
+        local object = layer.objects[o]
+        if object.type == "enemy" then
+          local enemy = Enemy(self.world, object.x, object.y)
+          table.insert(self.entities, enemy)
+        end
+      end
+    end
+  end
+end
 
 function Level:updateColliders()
   -- Destory existing coliders
@@ -67,7 +91,12 @@ function Level:updateColliders()
         local object = layer.objects[o]
         if object.shape == "rectangle" then
           local collider = self.world:newRectangleCollider(object.x, object.y, object.width, object.height)
-          collider:setCollisionClass('Solid')
+          if  object.properties.isGoal then
+            collider:setCollisionClass('Goal')
+          else 
+            collider:setCollisionClass('Solid')
+          end
+
           collider:setType('static')
           table.insert(self.colliders, collider)
         end
@@ -111,17 +140,21 @@ function Level:update(dt)
   self.player:update(dt)
   self.world:update(dt)
 
+  if self.player.object:enter('Goal') then
+    self.game:onlevelcomplete()
+  end
+
   local dx, dy = self.player:getX() - self.camera.x, self.player:getY() - self.camera.y
   self.camera:move(dx/2, dy/2)
   self.camera:zoomTo(self.game.scaling)
 
-  for b=1, #self.bullets, 1 do
-    -- TODO need to get rid of dead bulletsr
-    if self.bullets[b] == nil then
+  for e=1, #self.entities, 1 do
+    -- TODO need to get rid of dead entities
+    if self.entities[e] == nil then
     else
-      self.bullets[b]:update(dt)
-      if self.bullets[b].dead then
-        self.bullets[b] = nil
+      self.entities[e]:update(dt)
+      if self.entities[e].dead then
+        self.entities[e] = nil
       end
     end
   end
@@ -136,11 +169,11 @@ function Level:draw()
   love.graphics.draw(self.canvas, 0, 0)
   self.player:draw()
 
-  for b=1, #self.bullets, 1 do
-    -- TODO need to get rid of dead bullets
-    if self.bullets[b] == nil then
+  for e=1, #self.entities, 1 do
+    -- TODO need to get rid of dead entities
+    if self.entities[e] == nil then
     else
-      self.bullets[b]:draw()
+      self.entities[e]:draw()
     end
   end
 
@@ -153,7 +186,7 @@ end
 function Level:keyreleased(key)
   if key == "z" then
     local bullet = self.player:shoot()
-    table.insert(self.bullets, bullet)
+    table.insert(self.entities, bullet)
   end
 end
 

@@ -8,20 +8,20 @@ return {
   height = 20,
   tilewidth = 32,
   tileheight = 32,
-  nextlayerid = 5,
-  nextobjectid = 34,
+  nextlayerid = 4,
+  nextobjectid = 27,
   properties = {},
   tilesets = {
     {
       name = "test",
       firstgid = 1,
-      filename = "assets/test-tileset.tsx",
+      filename = "test-tileset.tsx",
       tilewidth = 32,
       tileheight = 32,
       spacing = 0,
       margin = 0,
       columns = 2,
-      image = "assets/sheet.png",
+      image = "sheet.png",
       imagewidth = 64,
       imageheight = 32,
       tileoffset = {
@@ -41,13 +41,13 @@ return {
     {
       name = "test2-tileset",
       firstgid = 3,
-      filename = "assets/test2-tileset.tsx",
+      filename = "test2-tileset.tsx",
       tilewidth = 32,
       tileheight = 32,
       spacing = 0,
       margin = 0,
       columns = 2,
-      image = "assets/sheet2.png",
+      image = "sheet2.png",
       imagewidth = 64,
       imageheight = 32,
       tileoffset = {
@@ -412,89 +412,8 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["isEnemies"] = false,
-            ["isGoal"] = true
+            ["isGoal"] = false
           }
-        }
-      }
-    },
-    {
-      type = "objectgroup",
-      id = 4,
-      name = "Enemies",
-      visible = true,
-      opacity = 1,
-      offsetx = 0,
-      offsety = 0,
-      draworder = "topdown",
-      properties = {
-        ["isEntities"] = true
-      },
-      objects = {
-        {
-          id = 27,
-          name = "",
-          type = "enemy",
-          shape = "point",
-          x = 128,
-          y = 608,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 28,
-          name = "",
-          type = "enemy",
-          shape = "point",
-          x = 800,
-          y = 480,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 29,
-          name = "",
-          type = "enemy",
-          shape = "point",
-          x = 1024,
-          y = 384,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 30,
-          name = "",
-          type = "enemy",
-          shape = "point",
-          x = 864,
-          y = 608,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 32,
-          name = "",
-          type = "enemy",
-          shape = "point",
-          x = 992,
-          y = 288,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {}
         }
       }
     }
