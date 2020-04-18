@@ -9,7 +9,7 @@ local Level = Class{
   init = function(self, game, data)
     self.game = game
     self.data = data
-    self.canvas = love.graphics.newCanvas(data.width * 32, data.height * 32)
+    self.canvas = love.graphics.newCanvas(data.width * 16, data.height * 16)
 
 
     -- Create the world for physics
@@ -39,11 +39,15 @@ local Level = Class{
       local image = love.graphics.newImage(data.tilesets[t].image)
       local firstID = data.tilesets[t].firstgid
       local count = data.tilesets[t].tilecount
+      local columns = data.tilesets[t].columns
 
       for s=1, count, 1 do
+        local col = (s - 1) % columns
+        local row = math.floor((s - 1) / columns)
+
         table.insert(self.tiles, {
           image = image,
-          quad = love.graphics.newQuad(32 * (s - 1), 0, 32, 32, image.getDimensions(image)),
+          quad = love.graphics.newQuad(16 * col, 16 * row, 16, 16, image.getDimensions(image)),
         })
       end
 
@@ -58,7 +62,7 @@ local Level = Class{
     self.startTime = love.timer.getTime()
     self.endTime = self.startTime + 15
   end,
-  tileSize = 32,
+  tileSize = 16,
   paused = false,
 }
 
@@ -132,9 +136,9 @@ function Level:updateCanvas()
         if tile > 0 then
 
           local col = t % width - 1
-          local row = math.floor(t / 40)
+          local row = math.floor(t / layer.width)
 
-          love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 32, row * 32)
+          love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 16, row * 16)
         end
       end
       love.graphics.pop()
@@ -195,7 +199,7 @@ function Level:draw()
   end
 
   -- Draw physics
-  -- self.world:draw()
+ self.world:draw()
 
   self.camera:detach()
 end
