@@ -62,7 +62,6 @@ local Level = Class{
     -- Create the camera defaulting to player position
     self.camera = Camera(self.player:getX(), self.player:getY())
     self.camera.smoother = Camera.smooth.damped(3)
-
   end,
   tileSize = 16,
   paused = false,
@@ -144,8 +143,8 @@ function Level:updateCanvas()
         local tile = layer.data[t]
         if tile > 0 then
 
-          local col = (t -1 ) % width 
-          local row = math.floor((t -1) / layer.width)
+          local col = (t - 1) % width 
+          local row = math.floor((t - 1) / layer.width)
           
           love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 16, row * 16)
         end
@@ -153,6 +152,8 @@ function Level:updateCanvas()
       love.graphics.pop()
     end
   end
+
+  height = self.data.height * 16
 
   love.graphics.setCanvas()
 end
