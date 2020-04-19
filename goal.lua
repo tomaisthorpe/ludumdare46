@@ -6,6 +6,7 @@ local Goal = Class{
     self.object:setCollisionClass('Goal')
     self.object:setFixedRotation(true)
     self.object:setObject(self)
+    self.object:setType('static')
 
     self.timer = 0
     self.frame = 0
