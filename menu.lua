@@ -19,7 +19,9 @@ function menu:init()
         menu.scaling = love.graphics.getWidth() / 800
     end
 
-    love.window.setTitle("Ludum Dare 46")
+    love.window.setTitle("Ludum Dare 46 - You can shoot!")
+
+    menu.image = love.graphics.newImage('assets/menu.png')
 end
 
 function menu:keyreleased(key)
@@ -34,5 +36,5 @@ end
 function menu:draw()
     love.graphics.translate(menu.translate[1], menu.translate[2])
     love.graphics.scale(menu.scaling)
-    -- love.graphics.draw(menu.image, 0, 0, 0, 1)
+    love.graphics.draw(menu.image, 0, 0, 0, 1)
 end

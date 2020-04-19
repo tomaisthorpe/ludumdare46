@@ -5,9 +5,9 @@ require "menu"
 
 function love.load()
   Gamestate.registerEvents()
-  Gamestate.switch(game)
+  Gamestate.switch(menu)
 
-  love.window.setTitle("Ludum Dare 46 - tomaisthorpe")
+  love.window.setTitle("Ludum Dare 46 - You can shoot!")
 end
 
 function setupWindow()

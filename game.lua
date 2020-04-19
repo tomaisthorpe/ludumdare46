@@ -172,7 +172,7 @@ function game:drawUI()
   love.graphics.rectangle("line", 0, 0, conf.healthWidth, conf.healthHeight)
 
   love.graphics.setColor(conf.healthColor)
-  love.graphics.rectangle("fill", conf.healthBorderWidth * 2, conf.healthBorderWidth * 2, (conf.healthWidth - conf.healthBorderWidth * 4) * (data.playerHealth / 100), conf.healthHeight - conf.healthBorderWidth * 4)
+  love.graphics.rectangle("fill", conf.healthBorderWidth * 2, conf.healthBorderWidth * 2, (conf.healthWidth - conf.healthBorderWidth * 4) * (data.playerHealth / 200), conf.healthHeight - conf.healthBorderWidth * 4)
   love.graphics.pop()
 
   -- Draw power bar

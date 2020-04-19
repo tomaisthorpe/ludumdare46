@@ -197,15 +197,15 @@ function Level:update(dt)
   local dx, dy = self.player:getX() - self.camera.x, self.player:getY() - self.camera.y
   self.camera:zoomTo(self.game.scaling)
 
-  local minX = self.game.translate[1] + 150 * self.game.scaling
-  local maxX = self.game.translate[1] + 250 * self.game.scaling
+  local minX = self.game.translate[1] + 375 * self.game.scaling
+  local maxX = self.game.translate[1] + 425 * self.game.scaling
   local minY = self.game.translate[2] + 300 * self.game.scaling
   local maxY = self.game.translate[2] + 400 * self.game.scaling
 
-  if self.player.direction == -1 then
-    minX = self.game.translate[1] + 550 * self.game.scaling
-    maxX = self.game.translate[1] + 650 * self.game.scaling
-  end
+  -- if self.player.direction == -1 then
+  --   minX = self.game.translate[1] + 550 * self.game.scaling
+  --   maxX = self.game.translate[1] + 650 * self.game.scaling
+  -- end
 
   self.camera:lockWindow(self.player:getX(), self.player:getY() - 100, minX, maxX, minY, maxY)
 
