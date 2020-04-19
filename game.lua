@@ -13,7 +13,8 @@ game = {
   font = {},
   titleFont = {},
   lives = 1,
-  isGameOver = true,
+  isGameOver = false,
+  isGameCompleted = false,
 }
 
 function game:calculateScaling()
@@ -66,14 +67,14 @@ function game:keypressed(key)
     love.event.quit()
   end
 
-  if key == "space" and self.isGameOver then
+  if key == "space" and (self.isGameOver or self.isGameCompleted) then
     love.event.quit()
   end
 end
 
 function game:onlevelcomplete()
   if self.levelIndex == #self.levelData then
-    love.event.quit()
+    self.isGameCompleted = true
   else
     self:loadLevel(self.levelIndex + 1)
   end
@@ -170,17 +171,27 @@ function game:drawUI()
   love.graphics.pop()
 
 
+  -- Positition transform for gameover and game completed
+  love.graphics.push()
+  love.graphics.translate(0, 250)
   -- If we're in the game over state, then display the game over message
   if self.isGameOver then
-    love.graphics.push()
-    love.graphics.translate(0, 250)
-
     love.graphics.setFont(game.titleFont)
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.printf("GAME OVER!", 0, 2, 800, "center")
     love.graphics.setColor(1, 1, 1)
     love.graphics.printf("GAME OVER!", 0, 0, 800, "center")
+  end
 
+  if self.isGameCompleted then
+    love.graphics.setFont(game.titleFont)
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.printf("GAME COMPLETED!", 0, 2, 800, "center")
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("GAME COMPLETED!", 0, 0, 800, "center")
+  end
+
+  if self.isGameOver or self.isGameCompleted then
     love.graphics.setFont(game.font)
     love.graphics.setColor(1, 1, 1)
     love.graphics.printf("Thanks for playing!", 0, 35, 800, "center")
@@ -188,8 +199,7 @@ function game:drawUI()
     love.graphics.setColor(0.7, 0.7, 0.7)
     love.graphics.printf("Press space to quit.", 0, 45, 800, "center")
 
-    love.graphics.pop()
   end
-
+    love.graphics.pop()
   love.graphics.pop()
 end

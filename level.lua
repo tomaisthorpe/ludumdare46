@@ -180,6 +180,7 @@ function Level:update(dt)
   self.world:update(dt)
 
   if self.player.object:enter('Goal') then
+    self.paused = true
     self.game:onlevelcomplete()
   end
 
