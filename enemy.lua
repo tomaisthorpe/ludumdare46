@@ -13,10 +13,13 @@ local Enemy = Class{
     self.direction = -1
 
     self.image = love.graphics.newImage("assets/enemy.png")
+    self.timer = 0
+    self.frame = 0
   end,
   speed = 400,
   health = 50,
   time = love.timer.getTime(),
+  fps = 10,
 }
 
 function Enemy:getX()
@@ -28,6 +31,15 @@ function Enemy:getY()
 end
 
 function Enemy:update(dt)
+  self.timer = self.timer + dt
+
+  if self.timer > 1 / self.fps then
+    self.frame = self.frame + 1
+
+    if self.frame > 4 then self.frame = 0 end
+    self.timer = 0
+  end
+
   if self.dead ~= true then
     -- Check if the enemy can see the player
     local x, y, px, py = self:getX(), self:getY(), self.level.player:getX(), self.level.player:getY()
@@ -66,7 +78,9 @@ end
 
 function Enemy:draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(self.image, self:getX() - 16 * self.direction, self:getY() - 16, 0, self.direction, 1)
+
+  quad = love.graphics.newQuad(self.frame * 32, 0, 32, 32, self.image:getWidth(), self.image:getHeight())
+  love.graphics.draw(self.image, quad, self.object:getX() + 16 * self.direction, self.object:getY() + 16, 0, self.direction, 1, 32, 32)
 end
 
 function Enemy:destroy()
