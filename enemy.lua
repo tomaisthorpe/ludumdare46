@@ -10,13 +10,15 @@ local Enemy = Class{
     self.object:setCollisionClass('Enemy')
     self.object:setFixedRotation(true)
     self.object:setObject(self)
-    self.direction = -1
+    self.direction = love.math.random(0, 1) * 2 - 1
+    self.startX = x
+    self.patrolling = true
 
     self.image = love.graphics.newImage("assets/enemy.png")
     self.timer = 0
     self.frame = 0
   end,
-  speed = 400,
+  speed = 200,
   health = 50,
   time = love.timer.getTime(),
   fps = 10,
@@ -57,10 +59,29 @@ function Enemy:update(dt)
             self.direction = 1
           end
 
+          self.patrolling = false
           self:shoot()
           self.time = love.timer.getTime()
         end
       end
+    end
+
+    -- If enemy is partrolling then move them
+    if self.patrolling then
+      local diff = self:getX() - self.startX
+      if self.direction == -1 then
+        if diff < -20 then
+          self.direction = 1
+        end
+      else
+        if self.direction == 1 then
+          if diff > 20 then
+            self.direction = -1
+          end
+        end
+      end
+
+      self.object:applyForce(self.direction * self.speed * self.object:getMass(), 0)
     end
   end
 end
