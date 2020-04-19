@@ -11,7 +11,9 @@ game = {
   level = {},
   levelIndex = 0,
   font = {},
-  lives = 5,
+  titleFont = {},
+  lives = 1,
+  isGameOver = true,
 }
 
 function game:calculateScaling()
@@ -31,8 +33,11 @@ function game:init()
   -- TODO ENABLE THIS
   love.window.setFullscreen(true)
 
-  game.font = love.graphics.newFont( "assets/veramono.ttf", 10 )
+  game.font = love.graphics.newFont( "assets/veramono.ttf", 10)
   game.font:setFilter( "nearest", "nearest" )
+
+  game.titleFont = love.graphics.newFont( "assets/veramono.ttf", 30)
+  game.titleFont:setFilter( "nearest", "nearest" )
 
   game.images = {
     heart = love.graphics.newImage("assets/heart.png"),
@@ -40,7 +45,9 @@ function game:init()
 
   -- Create the world
   game:calculateScaling()
+end
 
+function game:enter()
   self:loadLevel(1)
 end
 
@@ -58,6 +65,10 @@ function game:keypressed(key)
   if key == "escape" then
     love.event.quit()
   end
+
+  if key == "space" and self.isGameOver then
+    love.event.quit()
+  end
 end
 
 function game:onlevelcomplete()
@@ -71,7 +82,7 @@ end
 function game:onplayerdeath()
   self.lives = self.lives - 1
   if self.lives == 0 then
-    love.event.quit()
+    self:gameOver()
   else
     self:loadLevel(self.levelIndex)
   end
@@ -84,6 +95,10 @@ function game:ontimeout()
   else
     self:loadLevel(self.levelIndex)
   end
+end
+
+function game:gameOver()
+  self.isGameOver = true
 end
 
 function game:update(dt)
@@ -123,6 +138,7 @@ function game:drawUI()
   love.graphics.scale(game.scaling)
 
   love.graphics.setColor(1, 1, 1)
+  love.graphics.setFont(game.font)
 
   for l=1, self.lives, 1 do 
     love.graphics.draw(self.images.heart, 800 - 40 * l, 16 + conf.healthHeight)
@@ -152,6 +168,28 @@ function game:drawUI()
   love.graphics.setColor(0.5, 0.5, 0.5)
   love.graphics.print("POWER", 0, 1 + conf.powerHeight)
   love.graphics.pop()
+
+
+  -- If we're in the game over state, then display the game over message
+  if self.isGameOver then
+    love.graphics.push()
+    love.graphics.translate(0, 250)
+
+    love.graphics.setFont(game.titleFont)
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.printf("GAME OVER!", 0, 2, 800, "center")
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("GAME OVER!", 0, 0, 800, "center")
+
+    love.graphics.setFont(game.font)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Thanks for playing!", 0, 35, 800, "center")
+
+    love.graphics.setColor(0.7, 0.7, 0.7)
+    love.graphics.printf("Press space to quit.", 0, 45, 800, "center")
+
+    love.graphics.pop()
+  end
 
   love.graphics.pop()
 end

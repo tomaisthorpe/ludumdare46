@@ -49,13 +49,10 @@ local Level = Class{
       table.insert(self.tiles, tileset)
     end
 
-    self:updateCanvas()
-
     self.colliders = {}
     self:updateColliders()
     self:spawnEntities()
-    self.startTime = love.timer.getTime()
-    self.endTime = self.startTime + 60
+    self.timeLeft = 60
 
     -- Create the player
     self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y)
@@ -66,6 +63,7 @@ local Level = Class{
   end,
   tileSize = 16,
   paused = false,
+  hasCanvas = false,
 }
 
 function Level:spawnEntities()
@@ -157,6 +155,8 @@ function Level:updateCanvas()
   height = self.data.height * 16
 
   love.graphics.setCanvas()
+
+  self.hasCanvas = true
 end
 
 function Level:update(dt)
@@ -164,8 +164,13 @@ function Level:update(dt)
     return
   end
   
+  self.timeLeft = self.timeLeft - dt
+  if self.timeLeft < 0 then
+    self.timeLeft = 0
+  end
+
   -- Check if time is over
-  if self:getTimeLeft() == 0 then
+  if self.timeLeft == 0 then
     self.paused = true
     self.game:ontimeout()
     return
@@ -205,6 +210,10 @@ function Level:update(dt)
 end
 
 function Level:draw()
+  if self.hasCanvas == false then
+    self:updateCanvas()
+  end
+
   love.graphics.setColorMask()
   love.graphics.setColor(255, 255, 255)
 
@@ -233,21 +242,11 @@ function Level:onplayerdeath()
   self.game:onplayerdeath()
 end
 
-function Level:getTimeLeft()
-  local left = self.endTime - love.timer.getTime()
-
-  if left < 0 then
-    left = 0
-  end
-
-  return left
-end
-
 function Level:getUIData()
   return {
     playerHealth = self.player.health,
-    timeLeft = self:getTimeLeft(),
-    timeLeftPercentage = self:getTimeLeft() / 60,
+    timeLeft = self.timeLeft,
+    timeLeftPercentage = self.timeLeft / 60,
   }
 end
 
