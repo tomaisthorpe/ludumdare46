@@ -17,6 +17,7 @@ local Level = Class{
     self.world = wf.newWorld(0, 9.81 * 32, true)
     self.world:addCollisionClass('Solid')
     self.world:addCollisionClass('Player')
+    self.world:addCollisionClass('Sensor')
     self.world:addCollisionClass('Enemy')
     self.world:addCollisionClass('Bullet', {ignores = {'Player'}})
     self.world:addCollisionClass('EnemyBullet', {ignores = {'Enemy'}})
@@ -55,7 +56,7 @@ local Level = Class{
     self.timeLeft = 60
 
     -- Create the player
-    self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y)
+    self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y + 1)
 
     -- Create the camera defaulting to player position
     self.camera = Camera(self.player:getX(), self.player:getY())
@@ -232,7 +233,7 @@ function Level:draw()
   self.player:draw()
 
   -- Draw physics
-  -- self.world:draw()
+  self.world:draw()
 
   self.camera:detach()
 end

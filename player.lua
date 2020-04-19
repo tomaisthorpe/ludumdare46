@@ -11,8 +11,19 @@ local Player = Class{
     self.object:setCollisionClass('Player')
     self.object:setFixedRotation(true)
     self.object:setObject(self)
-    
+
+    self.object:setLinearDamping(1)
     self.image = love.graphics.newImage("assets/player.png")
+
+    self.sensor = world:newRectangleCollider(x - 15, y, 30, 4)
+    self.sensor:setFixedRotation(true)
+    local joint =  world:addJoint('RevoluteJoint', self.object, self.sensor, x, y - 2, false)
+
+    self.sensor:setPreSolve(function(c1, c2, contact)
+      contact:setEnabled(false)
+    end)
+
+
   end,
   speed = 300,
   jumpForce = -270,
@@ -21,6 +32,7 @@ local Player = Class{
   health = 100,
 
   lastShoot = 0,
+  canJump = true
 }
 
 function Player:getX()
@@ -41,10 +53,18 @@ function Player:update(dt)
     self.direction = 1
   end
 
+  if self.sensor:enter('Solid') then
+    self.canJump = true
+  end
+
+  if self.sensor:exit('Solid') then
+    self.canJump = false
+  end
+
   if love.keyboard.isDown('space') or love.keyboard.isDown('up') then
-    _, y = self.object:getLinearVelocity()
-    if y == 0 then
-      self.object:applyLinearImpulse(0, self.jumpForce * self.object:getMass())
+    if self.canJump then
+      self.object:applyLinearImpulse(0, self.jumpForce * (self.object:getMass() + self.sensor:getMass()))
+      self.canJump = false
     end
   end
 
