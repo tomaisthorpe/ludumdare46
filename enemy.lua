@@ -93,6 +93,7 @@ function Enemy:shoot()
   })
 
   self.level:addEntity(bullet)
+  self.level:playSound('shoot2')
 end
 
 function Enemy:hit(damage)
@@ -101,6 +102,8 @@ function Enemy:hit(damage)
   if self.health < 0 then
     self:destroy()
   end
+
+  self.level:playSound('hit')
 end
 
 function Enemy:draw()

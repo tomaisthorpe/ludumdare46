@@ -139,6 +139,8 @@ function Player:shoot()
 
   local shell = Shell(self.world, self:getX() + 0 * self.direction, self:getY(), vx, vy, self.direction)
   self.level:addEntity(shell)
+
+  self.level:playSound('shoot')
 end
 
 function Player:hit(damage)
@@ -148,6 +150,8 @@ function Player:hit(damage)
     self.health = 0
     self.level:onplayerdeath()
   end
+
+  self.level:playSound('hit2')
 end
 
 function Player:draw()

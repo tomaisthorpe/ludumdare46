@@ -101,6 +101,10 @@ function Level:spawnEntities()
   end
 end
 
+function Level:playSound(name)
+  self.game:playSound(name)
+end
+
 function Level:addEntity(entity)
   table.insert(self.entities, entity)
 end

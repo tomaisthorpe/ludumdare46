@@ -19,7 +19,13 @@ game = {
   lives = 5,
   isGameOver = false,
   isGameCompleted = false,
+  sounds = {},
 }
+
+function game:playSound(name)
+  self.sounds[name]:setVolume(0.5)
+  self.sounds[name]:play()
+end
 
 function game:calculateScaling()
   -- Work out the scaling factor
@@ -46,6 +52,14 @@ function game:init()
 
   game.images = {
     heart = love.graphics.newImage("assets/heart.png"),
+  }
+
+  game.sounds = {
+    goal = love.audio.newSource('assets/goal.wav', 'static'),
+    hit = love.audio.newSource('assets/hit.wav', 'static'),
+    hit2 = love.audio.newSource('assets/hit2.wav', 'static'),
+    shoot = love.audio.newSource('assets/shoot.wav', 'static'),
+    shoot2 = love.audio.newSource('assets/shoot2.wav', 'static'),
   }
 
   -- Create the world
@@ -77,6 +91,7 @@ function game:keypressed(key)
 end
 
 function game:onlevelcomplete()
+  self:playSound('goal')
   if self.levelIndex == #self.levelData then
     self.isGameCompleted = true
   else
