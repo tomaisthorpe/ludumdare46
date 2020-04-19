@@ -5,6 +5,7 @@ local Bullet =  Class{
     flags = flags or {}
     self.object = world:newCircleCollider(x, y, 2)
     self.object:setLinearVelocity(vx, vy)
+    self.object:setBullet(true)
 
     if flags.isEnemy then
       self.targetClass = 'Player'
