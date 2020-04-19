@@ -17,22 +17,39 @@ local Player = Class{
 
     self.sensor = world:newRectangleCollider(x - 15, y, 30, 4)
     self.sensor:setFixedRotation(true)
-    local joint =  world:addJoint('RevoluteJoint', self.object, self.sensor, x, y - 2, false)
+    world:addJoint('RevoluteJoint', self.object, self.sensor, x, y - 2, false)
 
     self.sensor:setPreSolve(function(c1, c2, contact)
       contact:setEnabled(false)
     end)
 
+    self.leftSensor = world:newRectangleCollider(x - 19, y - 30, 4, 30)
+    self.leftSensor:setFixedRotation(true)
+    world:addJoint('RevoluteJoint', self.object, self.leftSensor, x - 16, y - 15, false)
+
+    self.leftSensor:setPreSolve(function(c1, c2, contact)
+      contact:setEnabled(false)
+    end)
+
+    self.rightSensor = world:newRectangleCollider(x + 16, y - 30, 4, 30)
+    self.rightSensor:setFixedRotation(true)
+    world:addJoint('RevoluteJoint', self.object, self.rightSensor, x + 16, y - 15, false)
+
+    self.rightSensor:setPreSolve(function(c1, c2, contact)
+      contact:setEnabled(false)
+    end)
 
   end,
   speed = 300,
   jumpForce = -270,
   fireRate = 0.2,
   direction = 1,
-  health = 100,
+  health = 1000000,
 
   lastShoot = 0,
-  canJump = true
+  canJump = true,
+  canJumpLeft = false,
+  canJumpRight = false,
 }
 
 function Player:getX()
@@ -61,10 +78,28 @@ function Player:update(dt)
     self.canJump = false
   end
 
+  if self.leftSensor:enter('Solid') then
+    self.canJumpLeft = true
+  end
+
+  if self.leftSensor:exit('Solid') then
+    self.canJumpLeft = false
+  end
+
+  if self.rightSensor:enter('Solid') then
+    self.canJumpRight = true
+  end
+
+  if self.rightSensor:exit('Solid') then
+    self.canJumpRight = false
+  end
+
   if love.keyboard.isDown('space') or love.keyboard.isDown('up') then
-    if self.canJump then
+    if self.canJump or self.canJumpLeft or self.canJumpRight then
       self.object:applyLinearImpulse(0, self.jumpForce * (self.object:getMass() + self.sensor:getMass()))
       self.canJump = false
+      self.canJumpLeft = false
+      self.canJumpRight = false
     end
   end
 
