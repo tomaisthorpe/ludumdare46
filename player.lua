@@ -46,7 +46,7 @@ local Player = Class{
   jumpForce = -270,
   fireRate = 0.2,
   direction = 1,
-  health = 100000,
+  health = 100,
   fps = 20,
 
   lastShoot = 0,

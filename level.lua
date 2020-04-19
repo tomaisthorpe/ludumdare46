@@ -5,6 +5,7 @@ local Class = require 'hump.class'
 local Player = require 'player'
 local Enemy = require 'enemy'
 local Goal = require 'goal'
+local Cart = require 'cart'
 
 local Level = Class{
   init = function(self, game, data)
@@ -54,7 +55,7 @@ local Level = Class{
     self.colliders = {}
     self:updateColliders()
     self:spawnEntities()
-    self.timeLeft = 60
+    self.timeLeft = 30
 
     -- Create the player
     self.player = Player(self, self.world, self.playerStartingPosition.x, self.playerStartingPosition.y + 1)
@@ -92,6 +93,9 @@ function Level:spawnEntities()
             x = object.x,
             y = object.y,
           }
+
+          local cart = Cart(object.x - 64, object.y - 32)
+          self:addEntity(cart)
         end
       end
     end
@@ -147,7 +151,7 @@ function Level:updateCanvas()
 
           local col = (t - 1) % width 
           local row = math.floor((t - 1) / layer.width)
-          
+
           love.graphics.draw(self.tiles[tile].image, self.tiles[tile].quad, col * 16, row * 16)
         end
       end
@@ -250,7 +254,7 @@ function Level:getUIData()
   return {
     playerHealth = self.player.health,
     timeLeft = self.timeLeft,
-    timeLeftPercentage = self.timeLeft / 60,
+    timeLeftPercentage = self.timeLeft / 30,
   }
 end
 

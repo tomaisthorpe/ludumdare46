@@ -1,18 +1,22 @@
 local conf = require 'conf'
 local Level = require 'level'
 local level1 = require 'maps.level1'
+local level2 = require 'maps.level2'
+local level3 = require 'maps.level3'
 
 game = {
   translate = {0, 0},
   scaling = 1,
   levelData = {
     level1,
+    level2,
+    level3,
   },
   level = {},
   levelIndex = 0,
   font = {},
   titleFont = {},
-  lives = 1,
+  lives = 5,
   isGameOver = false,
   isGameCompleted = false,
 }

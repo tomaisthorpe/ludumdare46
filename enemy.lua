@@ -37,8 +37,8 @@ function Enemy:update(dt)
       local angle = math.atan2(math.abs(x-px),math.abs(y-py)) - math.pi / 2
       local distance = math.sqrt(math.pow(x - px, 2) + math.pow(y - py, 2))
 
-      if math.abs(angle) < 0.2 and distance < 300 then
-        if love.timer.getTime() - self.time > 0.5 then
+      if math.abs(angle) < 0.2 and distance < 200 then
+        if love.timer.getTime() - self.time > 0.75 then
           self:shoot()
           self.time = love.timer.getTime()
         end
