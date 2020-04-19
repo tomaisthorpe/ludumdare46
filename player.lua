@@ -14,6 +14,8 @@ local Player = Class{
 
     self.object:setLinearDamping(1)
     self.image = love.graphics.newImage("assets/player.png")
+    self.timer = 0
+    self.frame = 0
 
     self.sensor = world:newRectangleCollider(x - 15, y, 30, 4)
     self.sensor:setFixedRotation(true)
@@ -44,7 +46,8 @@ local Player = Class{
   jumpForce = -270,
   fireRate = 0.2,
   direction = 1,
-  health = 1000000,
+  health = 100000,
+  fps = 20,
 
   lastShoot = 0,
   canJump = true,
@@ -61,6 +64,22 @@ function Player:getY()
 end
 
 function Player:update(dt)
+  self.timer = self.timer + dt
+
+  if self.timer > 1 / self.fps then
+    self.frame = self.frame + 1
+
+    if self.frame > 4 then self.frame = 0 end
+    self.timer = 0
+  end
+
+  local vx, _ = self.object:getLinearVelocity()
+  if math.abs(vx) <= 1 then
+    self.frame = 0
+
+    self.fps = math.abs(vx) * 15
+  end
+
   if love.keyboard.isDown('left') then
     self.object:applyForce(-self.speed * self.object:getMass(), 0)
     self.direction = -1
@@ -133,7 +152,9 @@ end
 
 function Player:draw()
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(self.image, self:getX() - 16 * self.direction, self:getY() - 16, 0, self.direction, 1)
+
+  quad = love.graphics.newQuad(self.frame * 32, 0, 32, 32, self.image:getWidth(), self.image:getHeight())
+  love.graphics.draw(self.image, quad, self.object:getX() + 16 * self.direction, self.object:getY() + 16, 0, self.direction, 1, 32, 32)
 end
 
 return Player
