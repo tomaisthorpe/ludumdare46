@@ -13,7 +13,6 @@ local Level = Class{
     self.data = data
     self.canvas = love.graphics.newCanvas(data.width * 16, data.height * 16)
 
-
     -- Create the world for physics
     love.physics.setMeter(32)
     self.world = wf.newWorld(0, 9.81 * 32, true)

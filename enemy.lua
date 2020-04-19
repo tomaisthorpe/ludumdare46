@@ -51,6 +51,12 @@ function Enemy:update(dt)
 
       if math.abs(angle) < 0.2 and distance < 200 then
         if love.timer.getTime() - self.time > 0.75 then
+          if px - x < 0 then
+            self.direction = -1
+          else
+            self.direction = 1
+          end
+
           self:shoot()
           self.time = love.timer.getTime()
         end
@@ -61,7 +67,7 @@ end
 
 function Enemy:shoot()
   local vx, vy = self.object:getLinearVelocity()
-  local bullet = Bullet(self.world, self.object:getX(), self.object:getY(), vx, vy, -1, {
+  local bullet = Bullet(self.world, self.object:getX(), self.object:getY(), vx, vy, self.direction, {
     isEnemy = true,
   })
 
