@@ -4,6 +4,7 @@ local Class = require 'hump.class'
 
 local Player = require 'player'
 local Enemy = require 'enemy'
+local Goal = require 'goal'
 
 local Level = Class{
   init = function(self, game, data)
@@ -81,6 +82,11 @@ function Level:spawnEntities()
           self:addEntity(enemy)
         end
 
+        if object.type == "goal" then
+          local goal = Goal(self.world, object.x, object.y)
+          self:addEntity(goal)
+        end
+
         if object.type == "playerStart" then
           self.playerStartingPosition = {
             x = object.x,
@@ -111,11 +117,7 @@ function Level:updateColliders()
         local object = layer.objects[o]
         if object.shape == "rectangle" then
           local collider = self.world:newRectangleCollider(object.x, object.y, object.width, object.height)
-          if  object.properties.isGoal then
-            collider:setCollisionClass('Goal')
-          else
-            collider:setCollisionClass('Solid')
-          end
+          collider:setCollisionClass('Solid')
 
           collider:setType('static')
           table.insert(self.colliders, collider)
@@ -233,7 +235,7 @@ function Level:draw()
   self.player:draw()
 
   -- Draw physics
-  self.world:draw()
+  -- self.world:draw()
 
   self.camera:detach()
 end
