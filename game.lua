@@ -92,7 +92,7 @@ end
 function game:ontimeout()
   self.lives = self.lives - 1
   if self.lives == 0 then
-    love.event.quit()
+    self:gameOver()
   else
     self:loadLevel(self.levelIndex)
   end
@@ -153,7 +153,7 @@ function game:drawUI()
   love.graphics.rectangle("line", 0, 0, conf.healthWidth, conf.healthHeight)
 
   love.graphics.setColor(conf.healthColor)
-  love.graphics.rectangle("fill", conf.healthBorderWidth * 2, conf.healthBorderWidth * 2, conf.healthWidth * (data.playerHealth / 100) - conf.healthBorderWidth * 4, conf.healthHeight - conf.healthBorderWidth * 4)
+  love.graphics.rectangle("fill", conf.healthBorderWidth * 2, conf.healthBorderWidth * 2, (conf.healthWidth - conf.healthBorderWidth * 4) * (data.playerHealth / 100), conf.healthHeight - conf.healthBorderWidth * 4)
   love.graphics.pop()
 
   -- Draw power bar
@@ -164,7 +164,7 @@ function game:drawUI()
   love.graphics.rectangle("line", 0, 0, conf.powerWidth, conf.powerHeight)
 
   love.graphics.setColor(conf.powerColor)
-  love.graphics.rectangle("fill", conf.powerBorderWidth * 2, conf.powerBorderWidth * 2, conf.powerWidth * data.timeLeftPercentage - conf.powerBorderWidth * 4, conf.powerHeight - conf.powerBorderWidth * 4)
+  love.graphics.rectangle("fill", conf.powerBorderWidth * 2, conf.powerBorderWidth * 2, (conf.powerWidth - conf.powerBorderWidth * 4) * data.timeLeftPercentage, conf.powerHeight - conf.powerBorderWidth * 4)
 
   love.graphics.setColor(0.5, 0.5, 0.5)
   love.graphics.print("POWER", 0, 1 + conf.powerHeight)
